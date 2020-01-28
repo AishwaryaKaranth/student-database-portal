@@ -28,8 +28,11 @@ $d=json_decode(file_get_contents("php://input"));
 //if(count($d)>0){
 	$n=mysqli_real_escape_string($connect,$d->name);
 	$c=mysqli_real_escape_string($connect,$d->college);
-
-	$query="INSERT INTO data (name,college) VALUES('$n','$c')";
+	$course_taken=mysqli_real_escape_string($connect,$d->course);
+	$grad_year=mysqli_real_escape_string($connect,$d->year_of_graduation);
+	$i=mysqli_real_escape_string($connect,$d->instructor);
+	$fee_paid=mysqli_real_escape_string($connect,$d->fee_paid); 
+	$query="INSERT INTO data (name,college,course,year_of_graduation,instructor,fee_paid) VALUES('$n','$c','$course_taken','$grad_year','$i','$fee_paid')";
 	if(mysqli_query($connect,$query)){
 		echo "data inserted";
 	}

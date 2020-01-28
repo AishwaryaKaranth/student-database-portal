@@ -43,13 +43,35 @@
 </head>
 <body>
     <div ng-app="myApp" ng-controller="myController">
+        <form action="sortdata.php" method="POST">
+           Sort by: <select><option value="alphabetic_order">Alphabetic order</option>
+            <option value="college">College</option>
+            <option value="course">Course</option>
+           </select>
+        </form>
         <ul>
             <li> Name</li>
-            <input type="text" ng-model="name" />
+           <li> <input type="text" ng-model="name" /></li>
         </ul>
         <ul>
             <li>college</li>
-            <input type="text" ng-model="college" />
+           <li> <input type="text" ng-model="college" /></li>
+        </ul>
+        <ul>
+            <li>course</li>
+           <li> <input type="text" ng-model="course" /></li>
+        </ul>
+        <ul>
+            <li>year of graduation</li>
+           <li> <input type="text" ng-model="grad" /></li>
+        </ul>
+        <ul>
+            <li>instructor</li>
+           <li> <input type="text" ng-model="instructor" /></li>
+        </ul>
+        <ul>
+            <li>fee paid</li>
+           <li> <input type="text" ng-model="fee" /></li>
         </ul>
         <ul>
             <li> </li>
@@ -59,17 +81,25 @@
         </ul>
 
         <!--CREATE A TABLE-->
-        <table> 
+        <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"> 
             <tr>
                 <th>Code</th>
                     <th> Name</th>
                         <th>college</th>
+                        <th>course</th>
+                        <th>Year of graduation</th>
+                        <th>instructor</th>
+                        <th>fee paid</th>
             </tr>
 
             <tr ng-repeat="movies in movieArray">
                 <td><label>{{$index + 1}}</label></td>
                 <td><label>{{movies.name}}</label></td>
                 <td><label>{{movies.college}}</label></td>
+                <td><label>{{movies.course}}</label></td>
+                <td><label>{{movies.grad}}</label></td>
+                <td><label>{{movies.instructor}}</label></td>
+                <td><label>{{movies.fee}}</label></td>
                 <td><input type="checkbox" ng-model="movies.Remove"/></td>
             </tr>
         </table>
@@ -98,7 +128,7 @@
        $scope.submit = function () {
          $http.post(
                         "submit.php",
-                        {'name':$scope.name,'college':$scope.college}
+                        {'name':$scope.name,'college':$scope.college,'course':$scope.course,'grad':$scope.grad,'instructor':$scope.instructor,'fee':$scope.fee}
                         ).success(function(d){
                             alert(d);
                         });
@@ -110,12 +140,19 @@
                 var movie = [];
                 movie.name = $scope.name;
                 movie.college = $scope.college;
-
+                movie.course=$scope.course;
+                movie.grad=$scope.grad;
+                movie.instructor=$scope.instructor;
+                movie.fee=$scope.fee;
                 $scope.movieArray.push(movie);
 
                 // CLEAR TEXTBOX.
                 $scope.name = null;
                 $scope.college = null;
+                $scope.course=null;
+                $scope.grad=null;
+                $scope.instructor=null;
+                $scope.fee=null;
             }
         };
 
@@ -147,7 +184,7 @@
                     $.post("php/submit.php",{string: 'str'});*/
                     $http.post(
                         "submit.php",
-                        {'name':$scope.name,'college':$scope.college}
+                        {'name':$scope.name,'college':$scope.college,'course':$scope.course,'grad':$scope.grad,'instructor':$scope.instructor,'fee':$scope.fee}
                         ).success(function(d){
                             alert(d);
                         });
