@@ -42,11 +42,26 @@
             font:13px Verdana;
             padding:3px 5px;
         }
+        table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+bottom: .5em;
+}
     </style>
 </head>
 <body>
     <div ng-app="myApp" ng-controller="myController">
-        <form action="sortdata.php" method="POST">
+        <form method="post">
+            <input type="submit" name="generate_pdf" class="btn btn success" value="Generate pdf">
+        </form>
+        
            Sort by: <select><option value="alphabetic_order" onclick="sortByAlphabeticOrder()">Alphabetic order</option>
             <option value="college" onclick="sortByCollege()">College</option>
             <option value="course" onclick="sortByCourse()">Course</option>
@@ -54,7 +69,7 @@
             <option value="year_of_graduation" onclick="sortByYear()">Year</option>
 
            </select>
-        </form>
+       
         <ul>
             <li> Name</li>
            <li> <input type="text" ng-model="name" /></li>
@@ -88,26 +103,18 @@
 
         <!--CREATE A TABLE-->
         <div id="content">
-        <table  class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"> 
+        <table   id="selectedColumn" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"> 
           
-
-           <!-- <tr ng-repeat="movies in movieArray">
-                <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.name}}</label></td>
-                <td><label>{{movies.college}}</label></td>
-                <td><label>{{movies.course}}</label></td>
-                <td><label>{{movies.year_of_graduation}}</label></td>
-                <td><label>{{movies.instructor}}</label></td>
-                <td><label>{{movies.fee_paid}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
-            </tr>
-        </table>
-
+               
         
         <div>      
                 <button ng-click="removeRow()">Remove Row</button>
         </div>-->
+       
     </table>
+    <form action ="submit.php" method="post">  
+                          <input type="submit" name="create_pdf" class="btn btn-danger" value="Create PDF" />  
+                     </form>
 </div>
     <div id="editor"></div>
     <a href="#" id="cmd">generate pdf</a>
@@ -170,9 +177,7 @@
 
         // FINALLY SUBMIT THE DATA.
         $scope.submit = function () {
-          /*  var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
-                arrMovie.push('Name:' + value.name + ', College:' + value.college);ADD 3 lines later*/
+        
                 /*var data="test934";
                 $.post("php/submit.php",/*{'arrMovie[]':arrMovie}*//*data,
                     function(){
@@ -194,21 +199,17 @@
             
         }
     });
-  /*  $(document).ready(function(){
-        var doc=new jsPDF();
-        var specialElementHandlers={
-            '#editor':function(element,renderer){
-                return true;
-            }
-        };
-        $('#cmd').click(function(){
-            doc.fromHTML($('content').get(0),15,15,{'width':170,'elementHandlers':specialElementHandlers
-        });
-            setTimeout(function(){
-    doc.save('test');
-    },2000);
-    });
-    });*/
+ 
+    $(document).ready(function () {
+$('#selectedColumn').DataTable({
+  "aaSorting": [],
+  columnDefs: [{
+  orderable: false,
+  targets: 3
+  }]
+});
+  $('.dataTables_length').addClass('bs-select');
+});
 </script>
 
 <?php
@@ -224,18 +225,63 @@
     else{
         echo "connected";
     }
-    $sql="SELECT * FROM data";
-    $result=$connect->query($sql);
-    if($result->num_rows>0){
-        echo "<table><th>NAME</th><th>COLLEGE</th><th>COURSE</th><th>YEAR OF GRADUATION</th><th>INSTRUCTOR</th><th>FEE PAID</th>";
-        while($row=$result->fetch_assoc()){
-             echo "<tr><td>".$row["name"]."</td><td> ".$row["college"]."</td><td> ".$row["Course"]."</td><td> ".$row["year_of_graduation"]."</td><td>".$row["instructor"]."</td><td> ".$row["fee_paid"]."</td></tr>";
-        }
-        echo "</table>";
-    }else{
-        echo "no results :(";
+    if(isset($_GET['order'])){
+        $order=$_GET['order'];
     }
-    ?>
+    else{
+        $order='name';
+    }
+    if(isset($_GET['sort'])){
+        $sort=$_GET['sort'];
+    }
+    else{
+        $sort='ASC';
+    }
+    $resultSet=$connect->query("SELECT * FROM data ORDER BY $order $sort");
+   if($resultSet->num_rows>0){
+        $sort=='DESC' ? $sort='ASC':$sort='DESC';
+
+    echo "
+    <table border='1'>
+    <tr>
+    <th><a href='?order=name && sort=$sort'>Name</a></th>
+    <th><a href='?order=college && sort=$sort'>College</a></th>
+    <th><a href='?order=course && sort=$sort'>Course</a></th>
+    <th><a href='?order=year_of_graduation && sort=$sort'>Year of Graduation</a></th>
+    <th><a href='?order=instructor && sort=$sort'>Instructor</a></th>
+    <th><a href='?order=fee_paid && sort=$sort'>Fee paid</a></th>
+";
+while($rows=$resultSet->fetch_assoc()){
+    $name=$rows['name'];
+    $college=$rows['college'];
+    $course=$rows['Course'];
+    $year_of_graduation=$rows['year_of_graduation'];
+    $instructor=$rows['instructor'];
+    $fee_paid=$rows['fee_paid'];
+    
+
+   
+   echo "
+   <tr>
+   <td>$name</td>
+   <td>$college</td>
+   <td>$course</td>
+   <td>$year_of_graduation</td>
+   <td>$instructor</td>
+   <td>$fee_paid</td>
+   </tr>
+   ";
+
+
+}
+echo" </table>";
+}
+else{
+    echo "No records returned";
+}
+
+
+?>
     <script>
          $(document).ready(function(){
         var doc=new jsPDF();
