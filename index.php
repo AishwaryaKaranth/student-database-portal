@@ -175,7 +175,7 @@
     app.controller('myController', function ($scope,$http) {
 
         // JSON ARRAY TO POPULATE TABLE.
-        $scope.movieArray =
+        $scope.mArray =
         [     ];
        $scope.submit = function () {
          $http.post(
@@ -189,14 +189,14 @@
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             if ($scope.name != undefined && $scope.college != undefined) {
-                var movie = [];
-                movie.name = $scope.name;
-                movie.college = $scope.college;
-                movie.course=$scope.course;
-                movie.year_of_graduation=$scope.year_of_graduation;
-                movie.instructor=$scope.instructor;
-                movie.fee_paid=$scope.fee_paid;
-                $scope.movieArray.push(movie);
+                var m = [];
+                m.name = $scope.name;
+                m.college = $scope.college;
+                m.course=$scope.course;
+                m.year_of_graduation=$scope.year_of_graduation;
+                m.instructor=$scope.instructor;
+                m.fee_paid=$scope.fee_paid;
+                $scope.mArray.push(m);
 
                 // CLEAR TEXTBOX.
                 $scope.name = null;
@@ -208,16 +208,16 @@
             }
         };
 
-        // REMOVE SELECTED ROW(s) FROM TABLE.
+        .
         $scope.removeRow = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
+            var arrM = [];
+            angular.forEach($scope.mArray, function (value) {
                 if (!value.Remove) {
-                    arrMovie.push(value);
+                    arrM.push(value);
                 }
             });
-            $scope.movieArray = arrMovie;
-            //$scope.display=arrMovie;
+            $scope.mArray = arrM;
+            //$scope.display=arrM;
         };
 
         // FINALLY SUBMIT THE DATA.
@@ -239,9 +239,7 @@
                             alert(d);
                         });
            // });
-           // $scope.display = arrMovie;
-            //$.post("submit.php",{'arrMovie[]':arrMovie});
-            
+           
         }
     });
     $(document).ready(function(){
