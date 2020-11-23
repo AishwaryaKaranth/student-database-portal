@@ -60,11 +60,11 @@
                         <th>college</th>
             </tr>
 
-            <tr ng-repeat="movies in movieArray">
+            <tr ng-repeat="m in mArray">
                 <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.name}}</label></td>
-                <td><label>{{movies.college}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
+                <td><label>{{m.name}}</label></td>
+                <td><label>{{m.college}}</label></td>
+                <td><input type="checkbox" ng-model="m.Remove"/></td>
             </tr>
         </table>
 
@@ -93,11 +93,11 @@
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             if ($scope.name != undefined && $scope.college != undefined) {
-                var movie = [];
-                movie.name = $scope.name;
-                movie.college = $scope.college;
+                var m = [];
+                m.name = $scope.name;
+                m.college = $scope.college;
 
-                $scope.movieArray.push(movie);
+                $scope.mArray.push(m);
 
                 // CLEAR TEXTBOX.
                 $scope.name = null;
@@ -107,23 +107,23 @@
 
         // REMOVE SELECTED ROW(s) FROM TABLE.
         $scope.removeRow = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
+            var arrM = [];
+            angular.forEach($scope.mArray, function (value) {
                 if (!value.Remove) {
-                    arrMovie.push(value);
+                    arrM.push(value);
                 }
             });
-            $scope.movieArray = arrMovie;
+            $scope.mArray = arrM;
         };
 
         // FINALLY SUBMIT THE DATA.
         $scope.submit = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
-                arrMovie.push('Name:' + value.name + ', College:' + value.college);
+            var arrM = [];
+            angular.forEach($scope.mArray, function (value) {
+                arrM.push('Name:' + value.name + ', College:' + value.college);
             });
-            $scope.display = arrMovie;
-            var j=JSON.stringify(arrMovie);
+            $scope.display = arrM;
+            var j=JSON.stringify(arrM);
             console.log(j);
         };
     });
